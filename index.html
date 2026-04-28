@@ -95,7 +95,7 @@
         .p-img-box img { width: 100%; height: 100%; object-fit: cover; }
         .price { font-weight: 700; color: var(--accent); font-size: 1.1rem; }
 
-        /* --- MODAL (BOTTOM SHEET MÓVIL) --- */
+        /* --- MODAL --- */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: flex-end; z-index: 5000; }
         .modal.active { display: flex; }
         .modal-content {
@@ -108,6 +108,10 @@
         .modal-gallery { height: 400px; }
         .modal-gallery img { width: 100%; height: 100%; object-fit: cover; }
         .modal-details { padding: 30px; display: flex; flex-direction: column; gap: 20px; }
+
+        /* --- COLORES --- */
+        .color-dot { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #eee; cursor: pointer; transition: 0.3s; }
+        .color-dot.active { border-color: black; transform: scale(1.15); box-shadow: 0 0 5px rgba(0,0,0,0.1); }
 
         /* --- WHATSAPP FLOTANTE --- */
         .wa-float {
@@ -206,12 +210,21 @@
             <div class="modal-details">
                 <h2 id="m-name"></h2>
                 <p id="m-price" style="font-size: 1.5rem; color: var(--accent); font-weight: 700;"></p>
-                <p style="color: var(--text-dim); font-size: 0.9rem;">Pieza exclusiva de alta costura, diseñada para resaltar tu figura con elegancia y confort.</p>
                 
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <button class="filter-btn" onclick="selectSize(this)">S</button>
-                    <button class="filter-btn" onclick="selectSize(this)">M</button>
-                    <button class="filter-btn" onclick="selectSize(this)">L</button>
+                <p id="m-desc" style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.5;"></p>
+                
+                <div>
+                    <p style="font-weight: 700; font-size: 0.8rem; margin-bottom: 10px; text-transform: uppercase;">Color:</p>
+                    <div id="m-colors" style="display:flex; gap:12px;"></div>
+                </div>
+
+                <div>
+                    <p style="font-weight: 700; font-size: 0.8rem; margin-bottom: 10px; text-transform: uppercase;">Talla:</p>
+                    <div style="display:flex; gap:10px;">
+                        <button class="filter-btn" onclick="selectSize(this)">S</button>
+                        <button class="filter-btn" onclick="selectSize(this)">M</button>
+                        <button class="filter-btn" onclick="selectSize(this)">L</button>
+                    </div>
                 </div>
 
                 <button class="filter-btn active" style="width:100%; padding: 18px; border-radius: 8px; font-size: 1rem; margin-top: 10px;" onclick="addToCart()">
@@ -241,16 +254,48 @@
     <a href="https://wa.me/59175179990" class="wa-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
     <script>
+        // BASE DE DATOS DE PRODUCTOS CON DESCRIPCIONES Y COLORES
         const products = [
-            { id: 1, name: 'Vestido Satin Esmeralda', price: 450, cat: 'vestidos', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800' },
-            { id: 2, name: 'Conjunto Lino Natural', price: 520, cat: 'conjuntos', img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800' },
-            { id: 3, name: 'Blusa Seda Perla', price: 280, cat: 'conjuntos', img: 'https://images.unsplash.com/photo-1551163943-3f6a855d1153?w=800' },
-            { id: 4, name: 'Cartera Gold Clutch', price: 220, cat: 'accesorios', img: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800' },
-            { id: 5, name: 'Vestido Noche Negro', price: 600, cat: 'vestidos', img: 'https://images.unsplash.com/photo-1539008835279-43469393d161?w=800' }
+            { 
+                id: 1, 
+                name: 'Vestido Satin Esmeralda', 
+                price: 450, 
+                cat: 'vestidos', 
+                img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800',
+                desc: 'Vestido de seda satinada con caída fluida y brillo elegante. Perfecto para eventos de gala.',
+                colors: ['#043927', '#000000', '#FFFFFF']
+            },
+            { 
+                id: 2, 
+                name: 'Conjunto Lino Natural', 
+                price: 520, 
+                cat: 'conjuntos', 
+                img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800',
+                desc: 'Conjunto de dos piezas fabricado en lino 100% orgánico. Frescura y estilo para el día.',
+                colors: ['#f5f5dc', '#000000']
+            },
+            { 
+                id: 3, 
+                name: 'Blusa Seda Perla', 
+                price: 280, 
+                cat: 'conjuntos', 
+                img: 'https://images.unsplash.com/photo-1551163943-3f6a855d1153?w=800',
+                desc: 'Blusa clásica de seda con acabado perlado. Un básico esencial de lujo.',
+                colors: ['#FFFFFF', '#f5f5dc']
+            },
+            { 
+                id: 4, 
+                name: 'Cartera Gold Clutch', 
+                price: 220, 
+                cat: 'accesorios', 
+                img: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800',
+                desc: 'Accesorio rígido con baño metálico dorado. Incluye cadena minimalista.',
+                colors: ['#d4af37', '#000000']
+            }
         ];
 
         let cart = JSON.parse(localStorage.getItem('aura_cart')) || [];
-        let curP = null, selSize = null;
+        let curP = null, selSize = null, selColor = null;
 
         function render(data = products) {
             const grid = document.getElementById('product-grid');
@@ -283,10 +328,27 @@
 
         function openModal(id) {
             curP = products.find(p => p.id === id);
-            selSize = null;
+            selSize = selColor = null;
             document.getElementById('m-name').innerText = curP.name;
             document.getElementById('m-price').innerText = `Bs. ${curP.price}`;
+            document.getElementById('m-desc').innerText = curP.desc;
             document.getElementById('m-img').src = curP.img;
+            
+            // Cargar Colores
+            const colorDiv = document.getElementById('m-colors');
+            colorDiv.innerHTML = '';
+            curP.colors.forEach(c => {
+                const dot = document.createElement('div');
+                dot.className = 'color-dot';
+                dot.style.backgroundColor = c;
+                dot.onclick = () => {
+                    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+                    dot.classList.add('active');
+                    selColor = c;
+                };
+                colorDiv.appendChild(dot);
+            });
+
             document.querySelectorAll('#product-modal .filter-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('product-modal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -300,8 +362,8 @@
         }
 
         function addToCart() {
-            if(!selSize) return alert("Por favor selecciona una talla");
-            cart.push({...curP, size: selSize});
+            if(!selSize || !selColor) return alert("Por favor selecciona talla y color");
+            cart.push({...curP, size: selSize, color: selColor});
             updateCart(); saveCart(); closeModal(); toggleCart(true);
         }
 
@@ -332,7 +394,7 @@
         function checkoutWA() {
             if(!cart.length) return alert("Tu bolsa está vacía");
             let msg = "🛍️ *NUEVO PEDIDO - AURA*\n\n";
-            cart.forEach(p => msg += `• ${p.name} (${p.size}) - Bs. ${p.price}\n`);
+            cart.forEach(p => msg += `• ${p.name} (Talla: ${p.size}) - Bs. ${p.price}\n`);
             msg += `\n*Total: ${document.getElementById('cart-total').innerText}*`;
             window.open(`https://wa.me/59175179990?text=${encodeURIComponent(msg)}`);
         }
