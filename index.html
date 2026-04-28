@@ -1,0 +1,470 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA Boutique | Luxury & Style</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #000000;
+            --accent: #d4a373;
+            --bg: #ffffff;
+            --surface: #f9f9f9;
+            --text-main: #1a1a1a;
+            --text-dim: #777777;
+            --wa-green: #25D366;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); scroll-behavior: smooth; }
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
+
+        /* --- BARRA PROMO SUPERIOR --- */
+        .top-promo {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* --- NAVEGACIÓN --- */
+        nav {
+            padding: 1.2rem 8%;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; background: rgba(255,255,255,0.98); z-index: 1000; border-bottom: 1px solid #eee;
+        }
+        .logo { font-size: 2rem; font-weight: 700; letter-spacing: -1px; cursor: pointer; }
+        .nav-icons { display: flex; gap: 20px; align-items: center; }
+        .cart-trigger { position: relative; cursor: pointer; font-size: 1.4rem; }
+        .cart-badge { position: absolute; top: -8px; right: -12px; background: var(--accent); color: white; font-size: 0.7rem; padding: 2px 7px; border-radius: 50%; }
+
+        /* --- HERO BANNER (BIENVENIDA) --- */
+        .hero {
+            height: 85vh;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .hero-content h1 { font-size: clamp(3rem, 8vw, 5.5rem); margin-bottom: 1rem; line-height: 1; }
+        .hero-content p { font-size: 1rem; text-transform: uppercase; letter-spacing: 5px; margin-bottom: 2rem; font-weight: 300; }
+        .btn-shop { 
+            display: inline-block; padding: 18px 40px; background: white; color: black; 
+            text-decoration: none; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+            transition: 0.3s; border-radius: 2px;
+        }
+        .btn-shop:hover { background: var(--accent); color: white; }
+
+        /* --- SECCIÓN CATEGORÍAS (MOSAICO) --- */
+        .section-title { text-align: center; margin-bottom: 50px; }
+        .section-title h2 { font-size: 2.5rem; margin-bottom: 10px; }
+        .section-title span { color: var(--accent); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 3px; font-weight: 700; }
+
+        .cat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 0 8%;
+            margin-bottom: 80px;
+        }
+        .cat-item {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .cat-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s; }
+        .cat-overlay {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.2);
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.4s;
+        }
+        .cat-overlay h3 { color: white; font-size: 1.8rem; border-bottom: 2px solid white; padding-bottom: 5px; }
+        .cat-item:hover img { transform: scale(1.1); }
+        .cat-item:hover .cat-overlay { background: rgba(0,0,0,0.4); }
+
+        /* --- SECCIÓN PROMOCIÓN DE LA SEMANA --- */
+        .promo-week {
+            background: #fdfaf7;
+            padding: 80px 8%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 60px;
+            margin-bottom: 80px;
+        }
+        .promo-img { position: relative; }
+        .promo-img img { width: 100%; border-radius: 4px; box-shadow: 20px 20px 0 var(--accent); }
+        .promo-text h2 { font-size: 3rem; margin-bottom: 20px; color: var(--primary); }
+        .promo-text p { color: var(--text-dim); line-height: 1.8; margin-bottom: 30px; font-size: 1.1rem; }
+        .countdown { display: flex; gap: 20px; margin-bottom: 40px; }
+        .count-box { text-align: center; background: white; padding: 15px; min-width: 80px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .count-box span { display: block; font-size: 1.5rem; font-weight: 700; }
+        .count-box label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
+
+        /* --- GRILLA DE PRODUCTOS --- */
+        .filter-nav { display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; flex-wrap: wrap; }
+        .filter-btn { 
+            padding: 10px 25px; border: 1px solid #eee; background: white; border-radius: 30px; 
+            cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.3s;
+        }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 40px; padding: 0 8%; margin-bottom: 80px; }
+        .product-card { position: relative; cursor: pointer; text-align: center; transition: 0.4s; }
+        .p-img-box { aspect-ratio: 3/4; overflow: hidden; margin-bottom: 15px; position: relative; }
+        .p-img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .product-card:hover .p-img-box img { transform: scale(1.05); }
+        .product-card h4 { font-size: 1.1rem; margin-bottom: 8px; }
+        .price { font-weight: 700; color: var(--accent); }
+
+        /* --- MODAL PRODUCTO --- */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 5000; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content { 
+            background: white; width: 100%; max-width: 1000px; display: grid; grid-template-columns: 1.2fr 1fr; 
+            border-radius: 8px; overflow: hidden; position: relative; max-height: 90vh;
+        }
+        .close-modal { position: absolute; top: 20px; right: 20px; z-index: 10; cursor: pointer; font-size: 1.5rem; }
+        .modal-gallery { position: relative; height: 100%; background: #f4f4f4; }
+        .modal-main-img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-details { padding: 40px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+
+        /* --- CARRITO --- */
+        .cart-sidebar { position: fixed; top: 0; right: -100%; width: 400px; height: 100vh; background: white; z-index: 6000; transition: 0.5s; padding: 40px; box-shadow: -10px 0 30px rgba(0,0,0,0.1); }
+        .cart-sidebar.active { right: 0; }
+
+        /* --- FOOTER --- */
+        footer { background: #000; color: #fff; padding: 80px 8% 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 60px; }
+        .footer-col h4 { margin-bottom: 25px; font-size: 1.2rem; }
+        .footer-col p { color: #888; line-height: 1.8; font-size: 0.9rem; }
+        .footer-bottom { border-top: 1px solid #222; padding-top: 30px; text-align: center; color: #555; font-size: 0.8rem; }
+
+    /* --- ADAPTABILIDAD MÓVIL (2 PRODUCTOS POR LÍNEA) --- */
+@media (max-width: 768px) {
+    /* Ajuste de la grilla de productos */
+    .products-grid { 
+        grid-template-columns: repeat(2, 1fr); /* Fuerza 2 columnas */
+        gap: 15px; /* Espacio reducido para pantallas pequeñas */
+        padding: 0 4%; /* Margen lateral más estrecho */
+    }
+
+    /* Ajuste de imágenes para que no pierdan calidad */
+    .p-img-box {
+        aspect-ratio: 3/4;
+    }
+
+    .product-card h4 {
+        font-size: 0.9rem; /* Texto un poco más pequeño para que no se corte */
+    }
+
+    /* Ajuste del Modal para móviles */
+    .modal-content { 
+        grid-template-columns: 1fr; 
+        max-height: 85vh;
+    }
+    
+    .modal-gallery { height: 300px; }
+    
+    .cart-sidebar { width: 100%; }
+
+    /* Ajuste de categorías a 1 sola columna o scroll horizontal si prefieres */
+    .cat-grid { 
+        grid-template-columns: 1fr; 
+        padding: 0 4%;
+    }
+}
+
+/* Ajuste opcional para pantallas muy pequeñas (reloj o teléfonos mini) */
+@media (max-width: 380px) {
+    .products-grid {
+        gap: 10px;
+    }
+    .product-card h4 {
+        font-size: 0.8rem;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <div class="top-promo">🚚 ENVIOS GRATIS A TODA BOLIVIA POR COMPRAS MAYORES A BS. 500</div>
+
+    <nav>
+        <div class="logo" onclick="window.scrollTo(0,0)">AURA</div>
+        <div class="nav-icons">
+            <i class="fas fa-search"></i>
+            <div class="cart-trigger" onclick="toggleCart()">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-badge" id="cart-count">0</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="hero">
+        <div class="hero-content">
+            <p>Nueva Temporada 2026</p>
+            <h1>Redefine tu Estilo</h1>
+            <a href="#productos" class="btn-shop">Ver Colección</a>
+        </div>
+    </header>
+
+    <!-- SECCIÓN CATEGORÍAS -->
+    <section class="section-padding">
+        <div class="section-title">
+            <span>Explora</span>
+            <h2>Nuestras Categorías</h2>
+        </div>
+        <div class="cat-grid">
+            <div class="cat-item" onclick="filterBy('vestidos')">
+                <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800">
+                <div class="cat-overlay"><h3>Vestidos</h3></div>
+            </div>
+            <div class="cat-item" onclick="filterBy('conjuntos')">
+                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800">
+                <div class="cat-overlay"><h3>Conjuntos</h3></div>
+            </div>
+            <div class="cat-item" onclick="filterBy('accesorios')">
+                <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800">
+                <div class="cat-overlay"><h3>Accesorios</h3></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROMOCIÓN DE LA SEMANA -->
+    <section class="promo-week">
+        <div class="promo-img">
+            <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=1000">
+        </div>
+        <div class="promo-text">
+            <span>Oferta Exclusiva</span>
+            <h2>Look de la Semana</h2>
+            <p>Llévate el conjunto "Aura Divine" con un 20% de descuento solo por tiempo limitado. Incluye asesoría de imagen gratuita en tu compra.</p>
+            
+            <div class="countdown">
+                <div class="count-box"><span>03</span><label>Días</label></div>
+                <div class="count-box"><span>12</span><label>Horas</label></div>
+                <div class="count-box"><span>45</span><label>Min</label></div>
+            </div>
+            
+            <button class="btn-shop" style="background:var(--primary); color:white; border:none; cursor:pointer;">Comprar Ahora</button>
+        </div>
+    </section>
+
+    <!-- GRILLA DE PRODUCTOS -->
+    <section class="section-padding" id="productos">
+        <div class="section-title">
+            <span>Catálogo</span>
+            <h2>Nuestros Favoritos</h2>
+        </div>
+
+        <div class="filter-nav">
+            <button class="filter-btn active" onclick="filterBy('all')">Todos</button>
+            <button class="filter-btn" onclick="filterBy('vestidos')">Vestidos</button>
+            <button class="filter-btn" onclick="filterBy('conjuntos')">Conjuntos</button>
+            <button class="filter-btn" onclick="filterBy('accesorios')">Accesorios</button>
+        </div>
+
+        <div class="products-grid" id="product-grid">
+            <!-- Dinámico -->
+        </div>
+    </section>
+
+    <!-- MODAL PRODUCTO -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <div class="close-modal" onclick="closeModal()">&times;</div>
+            <div class="modal-gallery">
+                <img id="m-img" class="modal-main-img">
+            </div>
+            <div class="modal-details">
+                <h2 id="m-name">Nombre</h2>
+                <p id="m-price" style="font-size: 1.5rem; color: var(--accent); font-weight: 700;">Bs. 0</p>
+                <p id="m-desc" style="color: var(--text-dim); line-height: 1.6;"></p>
+                
+                <div>
+                    <label style="font-weight:700; display:block; margin-bottom:10px;">Color:</label>
+                    <div id="m-colors" style="display:flex; gap:10px;"></div>
+                </div>
+
+                <div>
+                    <label style="font-weight:700; display:block; margin-bottom:10px;">Talla:</label>
+                    <div id="m-sizes" style="display:flex; gap:10px;">
+                        <button class="filter-btn" onclick="selectSize(this)">S</button>
+                        <button class="filter-btn" onclick="selectSize(this)">M</button>
+                        <button class="filter-btn" onclick="selectSize(this)">L</button>
+                    </div>
+                </div>
+
+                <button class="btn-shop" style="background:black; color:white; border:none; width:100%; cursor:pointer;" onclick="addToCart()">Añadir al Carrito</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARRITO LATERAL -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div style="display:flex; justify-content:space-between; margin-bottom:30px;">
+            <h3>Mi Bolsa</h3>
+            <i class="fas fa-times" onclick="toggleCart()" style="cursor:pointer;"></i>
+        </div>
+        <div id="cart-list" style="flex-grow:1; overflow-y:auto;"></div>
+        <div style="border-top:1px solid #eee; padding-top:20px; margin-top:20px;">
+            <div style="display:flex; justify-content:space-between; font-weight:700; margin-bottom:20px;">
+                <span>Total:</span>
+                <span id="cart-total">Bs. 0</span>
+            </div>
+            <button class="btn-shop" style="background:var(--wa-green); color:white; border:none; width:100%; cursor:pointer;" onclick="checkoutWA()">Pedir por WhatsApp</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="color:white; margin-bottom:20px;">AURA</div>
+                <p>Exclusividad y diseño boliviano. Nuestra misión es empoderar tu estilo con prendas de la más alta calidad.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Menú</h4>
+                <p>Inicio<br>Colección<br>Nosotros<br>Contacto</p>
+            </div>
+            <div class="footer-col">
+                <h4>Ayuda</h4>
+                <p>Tallas<br>Envíos<br>Cambios<br>FAQ</p>
+            </div>
+            <div class="footer-col">
+                <h4>Síguenos</h4>
+                <div style="display:flex; gap:15px; font-size:1.2rem; margin-top:10px;">
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-tiktok"></i>
+                    <i class="fab fa-facebook"></i>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 AURA BOUTIQUE | Desarrollado con Estilo
+        </div>
+    </footer>
+
+   <script>
+    const products = [
+        { id: 1, name: 'Vestido Satin Esmeralda', price: 450, cat: 'vestidos', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800', desc: 'Elegancia pura en seda satinada.', colors: [{n:'Esmeralda', c:'#043927'}, {n:'Negro', c:'#ff0000'}, {r:'Rojo', c:'#000'}, {n:'Blanco', c:'#fff'}] },
+        { id: 2, name: 'Conjunto Lino Natural', price: 520, cat: 'conjuntos', img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800', desc: 'Fresco y sofisticado para el día.', colors: [{n:'Beige', c:'#f5f5dc'}, {n:'Rojo', c:'#ff0000'}, {n:'Negro', c:'#000'}, {n:'Blanco', c:'#fff'}] },
+        { id: 3, name: 'Blusa Seda Perla', price: 280, cat: 'conjuntos', img: 'https://images.unsplash.com/photo-1551163943-3f6a855d1153?w=800', desc: 'Básico de lujo indispensable.', colors: [{n:'Blanco', c:'#fff'}, {n:'Rojo', c:'#ff0000'}, {n:'Beige', c:'#f5f5dc'}] },
+        { id: 4, name: 'Cartera Gold Clutch', price: 220, cat: 'accesorios', img: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800', desc: 'El toque final de oro.', colors: [{n:'Dorado', c:'#d4af37'}, {n:'Negro', c:'#000'}, {n:'Rojo', c:'#ff0000'}] }
+    ];
+
+    // Intentar cargar el carrito desde localStorage al iniciar
+    let cart = JSON.parse(localStorage.getItem('aura_cart')) || [];
+    let curP = null, selSize = null, selColor = null;
+
+    function render(cat='all') {
+        const grid = document.getElementById('product-grid'); grid.innerHTML = '';
+        products.filter(p => cat==='all' || p.cat===cat).forEach(p => {
+            grid.innerHTML += `
+                <div class="product-card" onclick="openModal(${p.id})">
+                    <div class="p-img-box"><img src="${p.img}"></div>
+                    <h4>${p.name}</h4>
+                    <p class="price">Bs. ${p.price}</p>
+                </div>`;
+        });
+    }
+
+    function filterBy(c) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase()===c || (c==='all' && b.innerText==='Todos')));
+        render(c);
+    }
+
+    function openModal(id) {
+        curP = products.find(p => p.id === id); selSize = selColor = null;
+        document.getElementById('m-name').innerText = curP.name;
+        document.getElementById('m-price').innerText = `Bs. ${curP.price}`;
+        document.getElementById('m-desc').innerText = curP.desc;
+        document.getElementById('m-img').src = curP.img;
+        
+        const colors = document.getElementById('m-colors'); colors.innerHTML = '';
+        curP.colors.forEach(col => {
+            colors.innerHTML += `<div style="width:30px; height:30px; border-radius:50%; background:${col.c}; cursor:pointer; border:2px solid #eee;" onclick="selectColor(this, '${col.n}')"></div>`;
+        });
+        document.querySelectorAll('#m-sizes button').forEach(b => b.classList.remove('active'));
+        document.getElementById('product-modal').classList.add('active');
+    }
+
+    function selectColor(el, name) {
+        document.querySelectorAll('#m-colors div').forEach(d => d.style.borderColor = '#eee');
+        el.style.borderColor = 'black'; selColor = name;
+    }
+
+    function selectSize(btn) {
+        document.querySelectorAll('#m-sizes button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active'); selSize = btn.innerText;
+    }
+
+    function addToCart() {
+        if(!selSize || !selColor) return alert("Elige talla y color");
+        cart.push({...curP, size: selSize, color: selColor});
+        updateCart(); 
+        saveCart(); // Guardar cambios
+        closeModal(); 
+        toggleCart(true);
+    }
+
+    function updateCart() {
+        const list = document.getElementById('cart-list'); let t = 0; list.innerHTML = '';
+        cart.forEach((p, i) => {
+            t += p.price;
+            list.innerHTML += `<div style="display:flex; gap:15px; margin-bottom:15px;">
+                <img src="${p.img}" style="width:60px; height:80px; object-fit:cover;">
+                <div style="flex-grow:1; font-size:0.8rem">
+                    <b>${p.name}</b><br>Talla: ${p.size} | Color: ${p.color}<br>Bs. ${p.price}
+                </div>
+                <i class="fas fa-trash" onclick="removeFromCart(${i})" style="cursor:pointer; color:#ccc"></i>
+            </div>`;
+        });
+        document.getElementById('cart-count').innerText = cart.length;
+        document.getElementById('cart-total').innerText = `Bs. ${t}`;
+    }
+
+    // Nueva función para borrar y guardar automáticamente
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCart();
+        saveCart();
+    }
+
+    // Nueva función para guardar en la memoria del navegador
+    function saveCart() {
+        localStorage.setItem('aura_cart', JSON.stringify(cart));
+    }
+
+    function checkoutWA() {
+        if(!cart.length) return;
+        let msg = "🛍️ *PEDIDO AURA BOUTIQUE*\n\n";
+        cart.forEach(p => msg += `• *${p.name}* (Talla: ${p.size}, Color: ${p.color}) - Bs. ${p.price}\n`);
+        window.open(`https://wa.me/59175179990?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function closeModal() { document.getElementById('product-modal').classList.remove('active'); }
+    function toggleCart(o=false) { document.getElementById('cart-sidebar').classList[o?'add':'toggle']('active'); }
+
+    // Ejecutar al cargar la página
+    render();
+    updateCart(); // Renderizar el carrito guardado si existe
+</script>
+</body>
+</html>
